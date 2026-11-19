@@ -147,12 +147,12 @@ function seedRecipes() {
     R('r7', 'Overnight oats skyr & fruits rouges', 'petit-dej', 4, 10, [], 465, 28, 63,
       ["200 g flocons d'avoine | Épicerie",'600 g skyr nature | Crèmerie','400 ml lait | Crèmerie','4 càs miel | Épicerie','200 g fruits rouges surgelés | Surgelés','40 g amandes | Épicerie'],
       ["Dans 4 bocaux : flocons, lait, skyr et miel.","Ajouter les fruits rouges et les amandes, fermer et garder au frais une nuit.","4 portions = 4 jours de conservation : à refaire tous les 4 jours."], 4),
-    R('r8', 'Skyr, banane et amandes', 'collation', 4, 5, [], 290, 20.5, 35,
-      ['600 g skyr nature | Crèmerie','4 bananes | Fruits & légumes','60 g amandes | Épicerie'],
-      ["Répartir le skyr en 4 pots, ajouter banane en rondelles et amandes au moment de manger.","4 portions = 4 jours de conservation : à refaire tous les 4 jours."], 4),
-    R('r9', 'Riz au lait protéiné', 'collation', 4, 30, ['Plaque de cuisson'], 270, 18, 42,
-      ['100 g riz rond | Épicerie','700 ml lait | Crèmerie','40 g sucre | Épicerie','400 g skyr nature | Crèmerie'],
-      ["Cuire le riz dans le lait 25 min à feu doux en remuant.","Hors du feu, ajouter le sucre puis le skyr. Répartir en 4 pots.","4 portions = 4 jours de conservation : à refaire tous les 4 jours."], 4),
+    R('r8', 'Skyr, banane et amandes', 'collation', 4, 5, [], 180, 16, 19,
+      ['520 g skyr nature | Crèmerie','2 bananes | Fruits & légumes','40 g amandes | Épicerie'],
+      ["Par boîte de 200 ml : 130 g de skyr, une demi-banane en rondelles et 10 g d'amandes concassées.","Ajouter la banane et les amandes au moment de manger si tu veux qu'elles restent croquantes.","4 boîtes = 4 jours de conservation : à refaire tous les 4 jours."], 4),
+    R('r9', 'Riz au lait protéiné', 'collation', 4, 30, ['Plaque de cuisson'], 200, 13.5, 33,
+      ['100 g riz rond | Épicerie','400 ml lait demi-écrémé | Crèmerie','20 g sucre | Épicerie','320 g skyr nature | Crèmerie'],
+      ["Cuire le riz dans le lait 25 min à feu doux en remuant.","Hors du feu, ajouter le sucre puis le skyr. Répartir en 4 boîtes de 200 ml (environ 170 ml chacune).","4 boîtes = 4 jours de conservation : à refaire tous les 4 jours."], 4),
     R('r10', 'Pâtes bolognaise de dinde', 'plat', 6, 30, ['Plaque de cuisson'], 520, 31, 68,
       ['480 g pâtes | Épicerie','450 g dinde hachée | Viande & poisson','800 g tomates concassées | Épicerie','2 oignons | Fruits & légumes','2 carottes | Fruits & légumes',"2 càs huile d'olive | Épicerie",'60 g parmesan râpé | Crèmerie'],
       ["Faire revenir oignons, carottes et dinde.","Ajouter les tomates, mijoter 15 min.","Cuire les pâtes, mélanger, parmesan, répartir en 6 boîtes."], 4),
@@ -195,16 +195,31 @@ function seedRecipes() {
       ["300 g flocons d'avoine | Épicerie",'6 œufs | Crèmerie','3 bananes | Fruits & légumes','600 g skyr nature | Crèmerie','2 càc levure chimique | Épicerie','6 càs miel | Épicerie'],
       ["Mixer flocons, œufs, bananes, skyr et levure.","Cuire des petits pancakes à la poêle antiadhésive, 2 min par face (environ 18).","Congélation : séparer par du papier cuisson. Réchauffer 40 s au micro-ondes, miel par-dessus. Portion = 3 pancakes."], 60),
     /* --- Collations --- */
-    R('r21', 'Cottage cheese, miel et noix', 'collation', 4, 5, [], 250, 19, 14,
-      ['600 g cottage cheese | Crèmerie','4 càc miel | Épicerie','60 g noix | Épicerie'],
-      ["Répartir le cottage cheese en 4 pots, ajouter miel et noix concassées au moment de manger.","4 portions = 4 jours de conservation : à refaire tous les 4 jours."], 4),
-    R('r22', 'Energy balls dattes, cacao et amandes (mixeur)', 'collation', 6, 15, ['Mixeur plongeant'], 190, 6, 24,
-      ['200 g dattes dénoyautées | Épicerie',"100 g flocons d'avoine | Épicerie",'100 g amandes | Épicerie','30 g cacao non sucré | Épicerie',"2 càs purée d'amande | Épicerie"],
-      ["Mixer tous les ingrédients jusqu'à obtenir une pâte collante.","Former environ 18 boules, garder au frais ou au congélateur. Portion = 3 boules."], 14),
-    R('r23', 'Muffins banane-skyr-avoine (four)', 'collation', 6, 30, ['Four','Mixeur plongeant'], 245, 12.5, 40,
-      ['3 bananes mûres | Fruits & légumes','300 g skyr nature | Crèmerie',"150 g flocons d'avoine | Épicerie",'3 œufs | Crèmerie','1 càc levure chimique | Épicerie','60 g miel | Épicerie'],
-      ["Mixer tous les ingrédients.","Verser dans 12 moules à muffins, four 180 °C, 20 min.","Se congèlent très bien. Portion = 2 muffins."], 60)
-  ].map(r => ['r6','r7','r8','r9','r21'].includes(r.id) ? { ...r, seedV: 3 } : r);
+    R('r21', 'Cottage cheese, miel et noix', 'collation', 4, 5, [], 215, 15.5, 12,
+      ['520 g cottage cheese | Crèmerie','4 càc miel | Épicerie','40 g noix | Épicerie'],
+      ["Par boîte de 200 ml : 130 g de cottage cheese, 1 càc de miel et 10 g de noix concassées.","Ajouter le miel et les noix au moment de manger.","4 boîtes = 4 jours de conservation : à refaire tous les 4 jours."], 4),
+    R('r22', 'Energy balls dattes, cacao et amandes (mixeur)', 'energie', 6, 15, ['Mixeur plongeant'], 225, 7, 30,
+      ['120 g dattes dénoyautées | Épicerie',"80 g flocons d'avoine | Épicerie",'80 g amandes | Épicerie','20 g cacao non sucré | Épicerie',"2 càs purée de cacahuète | Épicerie"],
+      ["Mixer tous les ingrédients jusqu'à obtenir une pâte collante.","Former 24 boules. Portion = 4 boules (une boîte de 200 ml).","Plutôt glucidique : à emporter avant ou pendant une sortie longue, elle n'est pas planifiée comme collation du quotidien. Se congèle très bien."], 60),
+    R('r23', 'Muffins banane-skyr-avoine (four)', 'collation', 6, 30, ['Four','Mixeur plongeant'], 228, 13, 35,
+      ['3 bananes mûres | Fruits & légumes','400 g skyr nature | Crèmerie',"150 g flocons d'avoine | Épicerie",'3 œufs | Crèmerie','1 càc levure chimique | Épicerie','40 g miel | Épicerie'],
+      ["Mixer tous les ingrédients.","Verser dans 12 moules à muffins, four 180 °C, 20 min.","Une boîte de 200 ml = 2 muffins. Se congèlent très bien : sors une boîte la veille au frigo."], 60),
+    R('r26', 'Chia pudding protéiné vanille-framboise', 'collation', 4, 10, [], 205, 14, 17,
+      ['60 g graines de chia | Épicerie','400 ml lait demi-écrémé | Crèmerie','320 g skyr nature | Crèmerie','4 càc miel | Épicerie','160 g framboises surgelées | Surgelés','1 càc extrait de vanille | Épicerie'],
+      ["Mélanger chia, lait, skyr, miel et vanille.","Répartir en 4 boîtes de 200 ml, ajouter 40 g de framboises sur chaque.","Laisser épaissir 2 h au frigo (ou toute la nuit). 4 boîtes = 4 jours de conservation."], 4),
+    R('r27', 'Fromage blanc, compote et granola', 'collation', 4, 5, [], 195, 14.5, 24,
+      ['600 g fromage blanc 0 % | Crèmerie','320 g compote sans sucre ajouté | Épicerie','80 g granola | Épicerie'],
+      ["Par boîte de 200 ml : 150 g de fromage blanc, 80 g de compote.","Ajouter 20 g de granola au moment de manger pour qu'il reste croustillant.","4 boîtes = 4 jours de conservation : à refaire tous les 4 jours."], 4),
+    R('r28', 'Brownie skyr-cacao-avoine (four)', 'collation', 6, 35, ['Four','Mixeur plongeant'], 213, 12, 28,
+      ['300 g skyr nature | Crèmerie',"120 g flocons d'avoine | Épicerie",'3 œufs | Crèmerie','40 g cacao non sucré | Épicerie','60 g miel | Épicerie','2 bananes mûres | Fruits & légumes','1 càc levure chimique | Épicerie'],
+      ["Mixer tous les ingrédients jusqu'à obtenir une pâte lisse.","Verser dans un moule carré, four 180 °C, 25 min. Laisser refroidir.","Couper en 12 carrés. Une boîte de 200 ml = 2 carrés. Se congèle très bien : sors une boîte la veille au frigo."], 60),
+    R('r29', 'Skyr glacé fruits rouges et granola', 'collation', 6, 10, [], 190, 15, 20,
+      ['780 g skyr nature | Crèmerie','300 g fruits rouges surgelés | Surgelés','6 càc miel | Épicerie','90 g granola | Épicerie'],
+      ["Mélanger le skyr, le miel et les fruits rouges légèrement écrasés.","Répartir en 6 boîtes de 200 ml (environ 180 g chacune), couvrir de 15 g de granola.","Congeler. Sors une boîte au frigo la veille, ou mange-la mi-glacée."], 60)
+  ].map(r => ['r6','r7'].includes(r.id) ? { ...r, seedV: 3 } : r)
+   .map(r => ['r8','r9','r21','r22','r23'].includes(r.id) ? { ...r, seedV: 4 } : r)
+   .map(r => r.type === 'collation' ? { ...r, box: 200 } : r)
+   .map(r => ['r22','r23','r28','r29'].includes(r.id) ? { ...r, freeze: true } : r);
 }
 
 const mergeSettings = st => {
@@ -416,6 +431,8 @@ function project(days) {
   const mains = S.recipes.filter(r => r.type === 'plat');
   const slots = S.settings.slots, kinds = slots.map(slotKind), mainSlots = slots.filter((x, i) => kinds[i] === 'main');
   let stock = S.stock.map(x => ({ ...x })), fridge = (S.fridge || []).map(x => ({ ...x })); const cooked = { ...S.cooked }, out = []; let last = null, tick = 0;
+  /* ce qui est déjà en stock compte comme « cuisiné récemment » pour la rotation */
+  [...stock, ...fridge].forEach(x => { if (!cooked[x.recipeId]) cooked[x.recipeId] = iso(today); });
   const used = {};   // ordre de passage : permet d'alterner les recettes
   Object.keys(S.eaten).filter(d => d < iso(today)).sort().forEach(d => S.eaten[d].forEach(e => { const r = recipe(e.recipeId); if (r && r.type === 'plat') { used[e.recipeId] = tick++; last = e.recipeId; } }));
   for (let i = 0; i < days; i++) {
@@ -463,13 +480,19 @@ function project(days) {
   }
   return out;
 }
+const adjRow = (it, f) => `<div class="meal"><span>${esc(recipe(it.recipeId) ? recipe(it.recipeId).name : '?')}</span><span><button data-act="stockAdj"${f ? ' data-f="1"' : ''} data-id="${it.recipeId}" data-n="-1">−</button> <b style="display:inline-block;min-width:1.6em;text-align:center">${it.portions}</b> <button data-act="stockAdj"${f ? ' data-f="1"' : ''} data-id="${it.recipeId}" data-n="1">+</button></span></div>`;
+const frozenFridge = () => (S.fridge || []).filter(it => recipe(it.recipeId) && recipe(it.recipeId).freeze);
 function stockCard() {
-  const list = S.stock.map(it => `<div class="meal"><span>${esc(recipe(it.recipeId) ? recipe(it.recipeId).name : '?')}</span><span><button data-act="stockAdj" data-id="${it.recipeId}" data-n="-1">−</button> <b style="display:inline-block;min-width:1.6em;text-align:center">${it.portions}</b> <button data-act="stockAdj" data-id="${it.recipeId}" data-n="1">+</button> <button class="del" data-act="stockDel" data-id="${it.recipeId}" title="Retirer (annule « J'ai cuisiné »)">✕</button></span></div>`).join('');
-  return `<div class="card"><div class="row sp"><b>Dans ton congélateur</b><span class="mut">${S.stock.length} / ${S.settings.stockTarget} recettes</span></div>${list || '<div class="mut">Rien pour le moment.</div>'}</div>`;
+  const fz = frozenFridge(), list = S.stock.map(it => adjRow(it, false)).join('') + fz.map(it => adjRow(it, true)).join('');
+  return `<div class="card"><div class="row sp"><b>❄️ Dans ton congélateur</b><span class="mut">${S.stock.length} / ${S.settings.stockTarget} plats</span></div>${list || '<div class="mut">Rien pour le moment.</div>'}</div>`;
 }
 function fridgeCard() {
-  const list = (S.fridge || []).map(it => `<div class="meal"><span>${esc(recipe(it.recipeId) ? recipe(it.recipeId).name : '?')}</span><span><button data-act="stockAdj" data-f="1" data-id="${it.recipeId}" data-n="-1">−</button> <b style="display:inline-block;min-width:1.6em;text-align:center">${it.portions}</b> <button data-act="stockAdj" data-f="1" data-id="${it.recipeId}" data-n="1">+</button> <button class="del" data-act="stockDel" data-f="1" data-id="${it.recipeId}" title="Retirer (annule « J'ai cuisiné »)">✕</button></span></div>`).join('');
-  return `<div class="card"><div class="row sp"><b>Petit-déj & collations d'avance</b><span class="mut">portions</span></div>${list || '<div class="mut">Rien pour le moment.</div>'}</div>`;
+  const list = (S.fridge || []).filter(it => !(recipe(it.recipeId) && recipe(it.recipeId).freeze)).map(it => adjRow(it, true)).join('');
+  return `<div class="card"><div class="row sp"><b>🧊 Dans ton frigo</b><span class="mut">petits-déj & collations · portions</span></div>${list || '<div class="mut">Rien pour le moment.</div>'}</div>`;
+}
+function inventoryView() {
+  return `<div class="row sp"><h2 style="margin:0">Inventaire</h2><button data-act="back">Fermer</button></div>
+  <div class="mut" style="margin:4px 0 10px">Ce que tu as d'avance. Utilise − et + pour corriger si ça ne correspond pas à la réalité.</div>${stockCard()}${fridgeCard()}`;
 }
 function eventsCard() {
   const L = S.settings.levels;
@@ -645,14 +668,14 @@ function viewToday() {
   const arrow = (n, c, dis) => `<button data-act="dayNav" data-n="${n}" ${dis ? 'disabled' : ''} style="width:46px;height:46px;padding:0;font-size:1.4rem;border-radius:50%;flex:none${dis ? ';opacity:.3' : ''}">${c}</button>`;
   const note = off > 0 ? `<div class="mut" style="margin-bottom:8px">Prévision : suppose que tu as tout cuisiné et tout mangé avant ce jour.</div>` : off < 0 ? `<div class="mut" style="margin-bottom:8px">Tu as oublié de cocher quelque chose ? Fais-le ici, tout se met à jour.</div>` : '';
   return `<div class="row sp" style="align-items:center;gap:6px">${arrow(-1, '‹', off <= -7)}<div style="text-align:center;flex:1"><div class="mut">${rel}</div><h1 style="font-size:1.6rem;text-transform:capitalize;margin:0">${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</h1>${off !== 0 ? `<span class="chip btn" style="margin:6px 0 0" data-act="dayNav" data-n="0">Retour à aujourd'hui</span>` : ''}</div>${arrow(1, '›', off >= 13)}</div>
-  <div style="margin-top:16px">${off === 0 ? stockCard() + fridgeCard() : ''}${note}</div>${dayBody(k)}`;
+  <div style="margin-top:16px">${note}</div>${dayBody(k)}${off === 0 ? `<button class="pri" style="width:100%;margin:18px 0 8px" data-act="inventory">📦 Inventaire</button>` : ''}`;
 }
 
 function recipeView(id, p) {
   const r = recipe(id); if (!r) return '<p>Recette introuvable.</p><button data-act="back">Fermer</button>';
   const portions = p || r.portions, f = portions / r.portions;
   return `<div class="row sp"><h2 style="margin:0">${esc(r.name)}</h2><button data-act="back">Fermer</button></div>
-  <div class="mut" style="margin-top:4px">${r.prep} min · ${r.kcal} kcal, <b>${r.prot} g de protéines</b> et ${r.carbs || 0} g de glucides par portion · se garde ${r.keep} jours</div>
+  <div class="mut" style="margin-top:4px">${r.prep} min · ${r.kcal} kcal, <b>${r.prot} g de protéines</b> et ${r.carbs || 0} g de glucides par portion · se garde ${r.keep} jours${r.box ? ' · <b>1 portion = 1 boîte de ' + r.box + ' ml</b>' : ''}${r.freeze && r.type !== 'plat' ? ' · se congèle' : ''}</div>
   <div>${r.eq.map(e => `<span class="chip">${esc(e)}</span>`).join('')}</div>
   <div class="card" style="margin-top:8px"><div class="row sp"><h3 style="margin:0">Ingrédients</h3><span>pour <input type="number" min="1" step="any" data-rvp="1" value="${portions}" style="width:70px;display:inline-block"> portions</span></div>
    <ul>${r.ings.map(i => `<li>${esc(fmtQty(i.q * f, i.u))} ${esc(i.n)}</li>`.replace('<li> ', '<li>')).join('')}</ul></div>
@@ -682,7 +705,7 @@ function render() {
   const views = { today: viewToday, plan: viewPlan, recipes: viewRecipes, batch: viewBatch, settings: viewSettings };
   const tabs = [['today', '🏠', 'Today'], ['plan', '📅', 'Planning'], ['recipes', '🍲', 'Recettes'], ['batch', '🛒', 'Courses'], ['settings', '⚙️', 'Réglages']];
   $('#app').innerHTML = '<div class="deco"><i></i><i></i><i></i></div>' + views[ui.tab]() + `<nav class="tabs"><div>${tabs.map(([k, ic, l]) => `<button class="${ui.tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span>${ic}</span>${l}</button>`).join('')}</div></nav>`;
-  renderModal();
+  renderModal(true);
 }
 function renderModal(keep) {
   const top = ui.modals[ui.modals.length - 1];
@@ -756,6 +779,7 @@ const A = {
   },
   syncNow: () => { syncPull(); },
   syncOff: () => { if (confirm('Désactiver la synchronisation sur cet appareil ? Tes données restent ici et en ligne.')) { try { localStorage.removeItem(CODE_KEY); } catch (e) {} render(); } },
+  inventory: () => { push(inventoryView); },
   recipeBatch: t => { const id = t.dataset.id; ui.rvP = recipe(id) ? portionsOf(recipe(id)) : S.settings.batchPortions; push(() => recipeView(id, ui.rvP)); },
   addEvent: () => {
     const name = document.getElementById('ev_name').value.trim(), date = document.getElementById('ev_date').value;

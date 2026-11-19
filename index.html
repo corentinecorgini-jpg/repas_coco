@@ -215,17 +215,22 @@ const mergeSettings = st => {
 };
 const fresh = () => ({ settings: mergeSettings(), recipes: seedRecipes(), plan: {}, batches: [], stock: [], fridge: [], snap: {}, eaten: {}, cooked: {}, lastCook: '', pending: [], events: [{ id: 'e1', name: 'SaintExpress', date: '2026-11-28', level: 'big' }] });
 let S;
+function hydrate(raw) {
+  raw.settings = mergeSettings(raw.settings); const st = { ...fresh(), ...raw };
+  for (const sd of seedRecipes()) {
+    const i = st.recipes.findIndex(r => r.id === sd.id);
+    if (i < 0) st.recipes.push(sd); else if ((st.recipes[i].seedV || 0) < sd.seedV) st.recipes[i] = sd;
+  }
+  st.recipes.forEach(r => { if (!r.type) r.type = 'plat'; if (r.carbs === undefined) r.carbs = 0; });
+  return st;
+}
 function load() {
   let rs = null;
   try {
     rs = localStorage.getItem(LS_KEY);
     const raw = JSON.parse(rs);
     if (raw) {
-      raw.settings = mergeSettings(raw.settings); S = { ...fresh(), ...raw };
-      for (const sd of seedRecipes()) {
-        const i = S.recipes.findIndex(r => r.id === sd.id);
-        if (i < 0) S.recipes.push(sd); else if ((S.recipes[i].seedV || 0) < sd.seedV) S.recipes[i] = sd;
-      }
+      S = hydrate(raw);
       /* Ajustement ponctuel du 16/11/2026 : congélateur = 2 portions de r1, et la bolognaise (r24) est la prochaine à cuisiner */
       S.patches = S.patches || {};
       if (!S.patches.p20261116c) { S.patches.p20261116c = 1; const d0 = new Date(); S.bought = { ...(S.bought || {}), r24: d0.getFullYear() + '-' + String(d0.getMonth() + 1).padStart(2, '0') + '-' + String(d0.getDate()).padStart(2, '0') }; }   // bolognaise : ingrédients déjà à la maison
@@ -234,14 +239,48 @@ function load() {
         S.stock = [{ recipeId: 'r25', portions: 2 }];
         S.pending = ['r24'];
       }
-      S.recipes.forEach(r => { if (!r.type) r.type = 'plat'; if (r.carbs === undefined) r.carbs = 0; });
       return;
     }
   } catch (e) { try { if (rs) localStorage.setItem(LS_KEY + '-backup', rs); } catch (e2) {} }   // en cas d'erreur de lecture, on garde une copie des données
   S = fresh();
 }
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}   // demande au navigateur de ne pas effacer les données
-function save() { _proj = null; try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
+const persist = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} };
+function save() { _proj = null; S.ts = Date.now(); persist(); schedulePush(); }
+function saveQuiet() { persist(); }   // enregistrement local des valeurs calculées (ne déclenche pas de synchro)
+
+/* ============ Synchronisation en ligne (Supabase) ============ */
+const SB = { url: 'https://umeplqvdaepeahhczigh.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtZXBscXZkYWVwZWFoaGN6aWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNjk4NDQsImV4cCI6MjExMDY0NTg0NH0.iVqRe1dH27J_xwcdETUQMCVF6WC_AW_0ldZzMVFgvCo' };
+const CODE_KEY = 'menu-app-code';
+const syncCode = () => { try { return localStorage.getItem(CODE_KEY) || ''; } catch (e) { return ''; } };
+const sync = { at: 0, err: false, timer: null };
+async function rpc(fn, body) {
+  const r = await fetch(SB.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SB.key, Authorization: 'Bearer ' + SB.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+function syncStatusUpdate() {
+  const el = document.getElementById('sync_status'); if (!el) return;
+  el.textContent = sync.err ? '⚠️ Hors ligne : la synchro reprendra dès que possible.' : sync.at ? '✓ Synchronisé à ' + new Date(sync.at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Synchronisation en cours…';
+}
+function schedulePush() { if (!syncCode()) return; clearTimeout(sync.timer); sync.timer = setTimeout(syncPush, 1500); }
+async function syncPush() {
+  const code = syncCode(); if (!code) return;
+  try { await rpc('set_state', { p_code: code, p_data: S, p_ts: S.ts || Date.now() }); sync.at = Date.now(); sync.err = false; }
+  catch (e) { sync.err = true; }
+  syncStatusUpdate();
+}
+function applyRemote(data, ts) { S = hydrate(data); S.ts = ts; persist(); _proj = null; render(); }
+async function syncPull() {
+  const code = syncCode(); if (!code) return;
+  try {
+    const rows = await rpc('get_state', { p_code: code }), row = rows && rows[0];
+    if (row && row.ts > (S.ts || 0)) applyRemote(row.data, row.ts);
+    else if (!row || row.ts < (S.ts || 0)) { await syncPush(); return; }
+    sync.at = Date.now(); sync.err = false;
+  } catch (e) { sync.err = true; }
+  syncStatusUpdate();
+}
 load();
 
 /* ============ Utilitaires ============ */
@@ -341,7 +380,7 @@ function getProj() {
       if (JSON.stringify(snap) !== JSON.stringify(S.snap[k0])) { S.snap[k0] = snap; dirty = true; }
       const lim = iso(addDays(today, -14)); Object.keys(S.snap).forEach(d => { if (d < lim) { delete S.snap[d]; dirty = true; } });
     }
-    if (dirty) save();
+    if (dirty) saveQuiet();
     _proj = p;
   }
   return _proj;
@@ -562,6 +601,15 @@ function viewSettings() {
    <div class="two">${num('stockTarget', 'Recettes en stock en permanence')}${num('shopCount', 'Recettes par session de courses')}${num('batchPortions', 'Portions par batch cuisiné')}${num('maxPrep', 'Temps de préparation max (min)')}</div>
    <label>Enseigne pour les courses</label><input data-set="store" value="${esc(s.store)}">
    <label>Premier jour de la semaine</label><select data-set="weekStart"><option value="1" ${s.weekStart == 1 ? 'selected' : ''}>Lundi</option><option value="0" ${s.weekStart == 0 ? 'selected' : ''}>Dimanche</option></select></div>
+  <div class="card"><h3 style="margin-top:0">Synchronisation en ligne</h3>
+   ${syncCode() ? `<div id="sync_status" class="mut">Synchronisation en cours…</div>
+   <label>Ton code secret (à saisir sur tes autres appareils)</label><input value="${esc(syncCode())}" readonly onfocus="this.select()">
+   <div class="row" style="margin-top:8px"><button data-act="syncNow">Synchroniser maintenant</button><button class="del" data-act="syncOff">Désactiver sur cet appareil</button></div>
+   <div class="mut" style="margin-top:6px">Tes données sont sauvegardées en ligne et se mettent à jour à chaque action. Garde ce code précieusement : il donne accès à tes données.</div>`
+   : `<div class="mut">Sauvegarde tes données en ligne pour ne plus les perdre et les retrouver sur d'autres appareils.</div>
+   <label>Code secret (12 caractères minimum)</label><input id="sync_code" autocapitalize="off" autocomplete="off" placeholder="ex : abcd-efgh-jkmn-pqrs">
+   <div class="row" style="margin-top:8px"><button data-act="syncGen">Générer un code</button><button class="pri" data-act="syncSetup">Activer</button></div>
+   <div class="mut" style="margin-top:6px">Note ton code quelque part : c'est lui qui permet de retrouver tes données sur un autre appareil.</div>`}</div>
   <div class="card"><h3 style="margin-top:0">Données</h3>
    <div class="row"><button data-act="export">Exporter (sauvegarde)</button><button data-act="import">Importer</button><input type="file" id="imp" accept="application/json" hidden></div>
    <div class="row" style="margin-top:8px"><button data-act="resetRecipes">Remettre les recettes d'exemple</button><button class="del" data-act="wipe">Tout effacer</button></div>
@@ -689,6 +737,25 @@ const A = {
     const f = t.dataset.f === '1', list = f ? (S.fridge = S.fridge || []) : S.stock, it = list.find(x => x.recipeId === t.dataset.id); if (!it) return;
     it.portions += +t.dataset.n; if (it.portions <= 0) { const nl = list.filter(x => x !== it); if (f) S.fridge = nl; else S.stock = nl; } save(); render();
   },
+  syncGen: () => {
+    const al = 'abcdefghjkmnpqrstuvwxyz23456789', b = crypto.getRandomValues(new Uint8Array(16));
+    const c = Array.from(b, x => al[x % al.length]).join('').replace(/(.{4})(?=.)/g, '$1-');
+    document.getElementById('sync_code').value = c;
+  },
+  syncSetup: async () => {
+    const code = (document.getElementById('sync_code').value || '').trim().toLowerCase();
+    if (code.length < 12) { alert('Le code doit faire au moins 12 caractères.'); return; }
+    try {
+      const rows = await rpc('get_state', { p_code: code }), row = rows && rows[0];
+      localStorage.setItem(CODE_KEY, code);
+      if (row && !confirm('Une sauvegarde existe déjà avec ce code.\n\nOK = la récupérer (remplace les données de cet appareil)\nAnnuler = garder les données de cet appareil et écraser la sauvegarde en ligne')) { S.ts = Date.now(); persist(); await syncPush(); }
+      else if (row) applyRemote(row.data, row.ts);
+      else { S.ts = Date.now(); persist(); await syncPush(); }
+      sync.at = Date.now(); sync.err = false; render();
+    } catch (e) { alert("Impossible de joindre le serveur. Vérifie ta connexion et réessaie."); }
+  },
+  syncNow: () => { syncPull(); },
+  syncOff: () => { if (confirm('Désactiver la synchronisation sur cet appareil ? Tes données restent ici et en ligne.')) { try { localStorage.removeItem(CODE_KEY); } catch (e) {} render(); } },
   recipeBatch: t => { const id = t.dataset.id; ui.rvP = recipe(id) ? portionsOf(recipe(id)) : S.settings.batchPortions; push(() => recipeView(id, ui.rvP)); },
   addEvent: () => {
     const name = document.getElementById('ev_name').value.trim(), date = document.getElementById('ev_date').value;
@@ -750,6 +817,9 @@ document.addEventListener('change', e => {
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 function regen() { save(); }
 render();
+syncPull();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) syncPull(); });
+window.addEventListener('online', syncPull);
 </script>
 </body>
 </html>

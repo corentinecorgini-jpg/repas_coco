@@ -216,8 +216,10 @@ const mergeSettings = st => {
 const fresh = () => ({ settings: mergeSettings(), recipes: seedRecipes(), plan: {}, batches: [], stock: [], fridge: [], snap: {}, eaten: {}, cooked: {}, lastCook: '', pending: [], events: [{ id: 'e1', name: 'SaintExpress', date: '2026-11-28', level: 'big' }] });
 let S;
 function load() {
+  let rs = null;
   try {
-    const raw = JSON.parse(localStorage.getItem(LS_KEY));
+    rs = localStorage.getItem(LS_KEY);
+    const raw = JSON.parse(rs);
     if (raw) {
       raw.settings = mergeSettings(raw.settings); S = { ...fresh(), ...raw };
       for (const sd of seedRecipes()) {
@@ -235,9 +237,10 @@ function load() {
       S.recipes.forEach(r => { if (!r.type) r.type = 'plat'; if (r.carbs === undefined) r.carbs = 0; });
       return;
     }
-  } catch (e) {}
+  } catch (e) { try { if (rs) localStorage.setItem(LS_KEY + '-backup', rs); } catch (e2) {} }   // en cas d'erreur de lecture, on garde une copie des données
   S = fresh();
 }
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}   // demande au navigateur de ne pas effacer les données
 function save() { _proj = null; try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
 load();
 

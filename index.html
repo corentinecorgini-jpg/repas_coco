@@ -248,6 +248,14 @@ function load() {
       S = hydrate(raw);
       /* Ajustement ponctuel du 16/11/2026 : congélateur = 2 portions de r1, et la bolognaise (r24) est la prochaine à cuisiner */
       S.patches = S.patches || {};
+      /* 22/11 : les courses de la bolognaise ne sont pas faites ; il ne reste que le cabillaud, donc r3 est la prochaine à cuisiner */
+      if (!S.patches.p20261122) {
+        S.patches.p20261122 = 1;
+        const d1 = new Date(), k1 = d1.getFullYear() + '-' + String(d1.getMonth() + 1).padStart(2, '0') + '-' + String(d1.getDate()).padStart(2, '0');
+        S.bought = { ...(S.bought || {}) }; delete S.bought.r24; S.bought.r3 = k1;
+        S.pending = ['r3'].concat((S.pending || []).filter(id => id !== 'r24' && id !== 'r3'));
+        S.ts = Date.now();
+      }
       if (!S.patches.p20261116c) { S.patches.p20261116c = 1; const d0 = new Date(); S.bought = { ...(S.bought || {}), r24: d0.getFullYear() + '-' + String(d0.getMonth() + 1).padStart(2, '0') + '-' + String(d0.getDate()).padStart(2, '0') }; }   // bolognaise : ingrédients déjà à la maison
       if (!S.patches.p20261116b) {
         S.patches.p20261116 = 1; S.patches.p20261116b = 1;
